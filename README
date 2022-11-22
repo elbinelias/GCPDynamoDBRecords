@@ -1,0 +1,4 @@
+TeamRole:~/environment $ cd retrievegcplambda/
+TeamRole:~/environment/retrievegcplambda (main) $ zip function.zip index.js
+  adding: index.js (deflated 44%)
+TeamRole:~/environment/retrievegcplambda (main) $ aws lambda create-function --function-name GCPDynamoDBRecords --zip-file fileb://function.zip --handler index.handler --runtime nodejs16.x --role arn:aws:iam::229045938482:role/lambda-dynamodb-role
