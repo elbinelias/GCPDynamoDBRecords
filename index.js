@@ -1,15 +1,16 @@
+//GCP primary lambda
 const AWS = require('aws-sdk');
 const docClient = new AWS.DynamoDB.DocumentClient();
 const lambda = new AWS.Lambda();
 console.log('Loading function');
 
-async function insertGCPdetails(gcpid,userId,remittanceinfo,status,amount,endtoendid,clientref,name){
+async function insertGCPdetails(gcpid,userId,remittanceinfo,status,amount,endtoendid,clientref,name,id_key,id_user){
   // params to send to lambda
   const params = {
     FunctionName: 'UpdateDynamoDBRecords',
     InvocationType: 'RequestResponse',
     LogType: 'None',
-    Payload: JSON.stringify({"item": gcpid,"endtoendid": endtoendid, "SystemRef": gcpid, "showstatus": status, "remittanceInfo": remittanceinfo, "clientref": clientref, "amt": amount}) 
+    Payload: JSON.stringify({"item": gcpid,"endtoendid": endtoendid, "SystemRef": gcpid, "showstatus": status, "remittanceInfo": remittanceinfo, "clientref": clientref, "amt": amount, "id_key": id_key, "id_user": id_user}) 
   };
   const response = await lambda.invoke(params).promise();
   if(response.StatusCode !== 200){
@@ -41,7 +42,9 @@ exports.handler = function(event, context, callback) {
 					   	console.log(element.endtoendid);
 					   	console.log(element.clientref);
 					   	console.log(element.name);
-					   	insertGCPdetails(element.gcpid,element.userId,element.remittanceinfo,element.status,element.amount,element.endtoendid,element.clientref,element.name);
+					   	console.log(event.id_key.toString());
+					   	console.log(event.id_user.toString());
+					   	insertGCPdetails(element.gcpid,element.userId,element.remittanceinfo,element.status,element.amount,element.endtoendid,element.clientref,element.name,event.id_key.toString(),event.id_user.toString());
                       });
 	 
 	   	
